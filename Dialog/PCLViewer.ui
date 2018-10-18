@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PCLViewer</class>
+ <widget class="QMainWindow" name="PCLViewer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>989</width>
+    <height>498</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>5000</width>
+    <height>5000</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Rockmass3DReconstruction</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QVTKWidget" name="qvtkWidget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>989</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="OpenAction"/>
+    <addaction name="action_9"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>显示</string>
+    </property>
+    <addaction name="setBgColorAction"/>
+    <addaction name="setCoordinateAxesAction"/>
+    <addaction name="removePointCloudAction"/>
+    <addaction name="clearScreenAction"/>
+    <addaction name="removeAllPointCloudsAction"/>
+    <addaction name="removeAllShapesAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>顶点化简</string>
+    </property>
+    <widget class="QMenu" name="menu_5">
+     <property name="title">
+      <string>法向量估计</string>
+     </property>
+     <addaction name="verticesNormalEstimationAction"/>
+     <addaction name="ObservePolyVerNormalAction"/>
+    </widget>
+    <widget class="QMenu" name="menu_6">
+     <property name="title">
+      <string>区域生长提取连续线段</string>
+     </property>
+     <addaction name="RGtoDetectLineSegsAction"/>
+     <addaction name="RGlineSegDisplayAction"/>
+    </widget>
+    <addaction name="menu_5"/>
+    <addaction name="menu_6"/>
+    <addaction name="separator"/>
+    <addaction name="doSimplifyVerticesSizeAction"/>
+    <addaction name="removeAllInitialVerticesAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>参数设置</string>
+    </property>
+    <addaction name="simplifyVerticesSizeAction"/>
+    <addaction name="mergeVerticesParamsAction"/>
+   </widget>
+   <widget class="QMenu" name="menu_7">
+    <property name="title">
+     <string>顶点合并</string>
+    </property>
+    <widget class="QMenu" name="menu_8">
+     <property name="title">
+      <string>处理多边形退化</string>
+     </property>
+     <addaction name="viewSpecificPolyAction"/>
+     <addaction name="action_4"/>
+     <addaction name="dealWithPolyDegenerationAction"/>
+    </widget>
+    <widget class="QMenu" name="menu_9">
+     <property name="title">
+      <string>优化特定多边形的位置</string>
+     </property>
+     <addaction name="observePolyIDAction"/>
+     <addaction name="performOptimisePositionAction"/>
+     <addaction name="action_10"/>
+    </widget>
+    <addaction name="showNeighborRegionAction"/>
+    <addaction name="showMatchingAction"/>
+    <addaction name="showMatchingClustersAction"/>
+    <addaction name="mergeMatchingRelationsAction"/>
+    <addaction name="mergeVertexEdgeMatchingAction"/>
+    <addaction name="menu_8"/>
+    <addaction name="separator"/>
+    <addaction name="performSnappingVerticesAction"/>
+    <addaction name="goOnPerformSnappingVerticesAction"/>
+    <addaction name="separator"/>
+    <addaction name="menu_9"/>
+    <addaction name="separator"/>
+    <addaction name="action_5"/>
+    <addaction name="separator"/>
+    <addaction name="action_11"/>
+    <addaction name="separator"/>
+    <addaction name="action_6"/>
+    <addaction name="separator"/>
+    <addaction name="action_20"/>
+   </widget>
+   <widget class="QMenu" name="menu_10">
+    <property name="title">
+     <string>测试优化</string>
+    </property>
+    <addaction name="action"/>
+    <addaction name="action_2"/>
+   </widget>
+   <widget class="QMenu" name="menu_11">
+    <property name="title">
+     <string>孔洞修复</string>
+    </property>
+    <addaction name="action_3"/>
+    <addaction name="action_7"/>
+    <addaction name="action_8"/>
+    <addaction name="action_dda"/>
+   </widget>
+   <widget class="QMenu" name="menu_12">
+    <property name="title">
+     <string>不连续面</string>
+    </property>
+    <widget class="QMenu" name="menu_13">
+     <property name="title">
+      <string>交互式插入不连续面</string>
+     </property>
+     <addaction name="action_16"/>
+     <addaction name="action_1"/>
+     <addaction name="action_17"/>
+     <addaction name="action_18"/>
+    </widget>
+    <addaction name="action_12"/>
+    <addaction name="action_14"/>
+    <addaction name="action_13"/>
+    <addaction name="menu_13"/>
+    <addaction name="action_19"/>
+    <addaction name="action_DDA"/>
+    <addaction name="separator"/>
+    <addaction name="action_21"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_4"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_7"/>
+   <addaction name="menu_10"/>
+   <addaction name="menu_11"/>
+   <addaction name="menu_12"/>
+  </widget>
+  <action name="OpenAction">
+   <property name="text">
+    <string>打开多边形数据</string>
+   </property>
+   <property name="toolTip">
+    <string>打开多边形文件</string>
+   </property>
+  </action>
+  <action name="setBgColorAction">
+   <property name="text">
+    <string>背景色</string>
+   </property>
+  </action>
+  <action name="setCoordinateAxesAction">
+   <property name="text">
+    <string>坐标轴</string>
+   </property>
+  </action>
+  <action name="removePointCloudAction">
+   <property name="text">
+    <string>移除指定点云或形状</string>
+   </property>
+  </action>
+  <action name="verticesNormalEstimationAction">
+   <property name="text">
+    <string>法向量估计</string>
+   </property>
+  </action>
+  <action name="clearScreenAction">
+   <property name="text">
+    <string>清屏</string>
+   </property>
+  </action>
+  <action name="ObservePolyVerNormalAction">
+   <property name="text">
+    <string>查看特定多边形的顶点法向量</string>
+   </property>
+  </action>
+  <action name="simplifyVerticesSizeAction">
+   <property name="text">
+    <string>顶点化简</string>
+   </property>
+  </action>
+  <action name="RGtoDetectLineSegsAction">
+   <property name="text">
+    <string>区域生长</string>
+   </property>
+  </action>
+  <action name="RGlineSegDisplayAction">
+   <property name="text">
+    <string>显示</string>
+   </property>
+  </action>
+  <action name="doSimplifyVerticesSizeAction">
+   <property name="text">
+    <string>顶点化简(一步执行)</string>
+   </property>
+  </action>
+  <action name="removeAllPointCloudsAction">
+   <property name="text">
+    <string>移除所有点云</string>
+   </property>
+  </action>
+  <action name="removeAllShapesAction">
+   <property name="text">
+    <string>移除所有形状</string>
+   </property>
+  </action>
+  <action name="removeAllInitialVerticesAction">
+   <property name="text">
+    <string>移除初始顶点集合</string>
+   </property>
+  </action>
+  <action name="showNeighborRegionAction">
+   <property name="text">
+    <string>查看顶点的邻域半径</string>
+   </property>
+  </action>
+  <action name="mergeVerticesParamsAction">
+   <property name="text">
+    <string>顶点合并</string>
+   </property>
+  </action>
+  <action name="showMatchingAction">
+   <property name="text">
+    <string>查看匹配关系(点-点，点-边)</string>
+   </property>
+  </action>
+  <action name="mergeMatchingRelationsAction">
+   <property name="text">
+    <string>合并匹配关系(点-点)</string>
+   </property>
+  </action>
+  <action name="showMatchingClustersAction">
+   <property name="text">
+    <string>查看匹配的顶点簇</string>
+   </property>
+  </action>
+  <action name="mergeVertexEdgeMatchingAction">
+   <property name="text">
+    <string>合并匹配关系(点-边）</string>
+   </property>
+  </action>
+  <action name="viewSpecificPolyAction">
+   <property name="text">
+    <string>查看特定多边形</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>轮番查看特定多边形</string>
+   </property>
+  </action>
+  <action name="dealWithPolyDegenerationAction">
+   <property name="text">
+    <string>处理多边形退化情况</string>
+   </property>
+  </action>
+  <action name="performSnappingVerticesAction">
+   <property name="text">
+    <string>顶点合并(一步执行)</string>
+   </property>
+  </action>
+  <action name="goOnPerformSnappingVerticesAction">
+   <property name="text">
+    <string>继续执行</string>
+   </property>
+  </action>
+  <action name="observePolyIDAction">
+   <property name="text">
+    <string>查看多边形id</string>
+   </property>
+  </action>
+  <action name="performOptimisePositionAction">
+   <property name="text">
+    <string>执行位置优化</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>生成测试多边形</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>执行优化</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>多边形三角分割(显示平面效果)</string>
+   </property>
+  </action>
+  <action name="action_6">
+   <property name="text">
+    <string>在有角对边关系的线段上增加顶点（孔洞修复之前必点）</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>构造全局点集</string>
+   </property>
+  </action>
+  <action name="action_7">
+   <property name="text">
+    <string>进入交互模式</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>保存模型数据</string>
+   </property>
+  </action>
+  <action name="action_9">
+   <property name="text">
+    <string>岩体模型数据</string>
+   </property>
+  </action>
+  <action name="action_dda">
+   <property name="text">
+    <string>保存成dda数据</string>
+   </property>
+  </action>
+  <action name="action_11">
+   <property name="text">
+    <string>检查模型合法性</string>
+   </property>
+  </action>
+  <action name="action_10">
+   <property name="text">
+    <string>执行多边形删除</string>
+   </property>
+  </action>
+  <action name="action_12">
+   <property name="text">
+    <string>加载优势结构面</string>
+   </property>
+  </action>
+  <action name="action_13">
+   <property name="text">
+    <string>识别不连续面</string>
+   </property>
+  </action>
+  <action name="action_14">
+   <property name="text">
+    <string>加载平面点云</string>
+   </property>
+  </action>
+  <action name="action_16">
+   <property name="text">
+    <string>准备</string>
+   </property>
+  </action>
+  <action name="action_1">
+   <property name="text">
+    <string>顶点1</string>
+   </property>
+  </action>
+  <action name="action_17">
+   <property name="text">
+    <string>顶点2</string>
+   </property>
+  </action>
+  <action name="action_18">
+   <property name="text">
+    <string>生成不连续面</string>
+   </property>
+  </action>
+  <action name="action_19">
+   <property name="text">
+    <string>显示不连续面</string>
+   </property>
+  </action>
+  <action name="action_DDA">
+   <property name="text">
+    <string>保存岩体模型DDA数据</string>
+   </property>
+  </action>
+  <action name="action_20">
+   <property name="text">
+    <string>展示精华匹配关系</string>
+   </property>
+  </action>
+  <action name="action_21">
+   <property name="text">
+    <string>手动指定不连续面</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QVTKWidget</class>
+   <extends>QWidget</extends>
+   <header>QVTKWidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
