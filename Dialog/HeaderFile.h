@@ -62,7 +62,7 @@ struct SinkPoint
 	int vote_num;	// total numbers voted for this sink point
 };
 
-struct Triangle
+struct Triangle_HeadFile
 {
 	pcl::PointXYZ p_a;
 	pcl::PointXYZ p_b;
@@ -75,7 +75,7 @@ struct Plane
 	PointCloudT::Ptr border;		// 平面的边界点
 	PointCloudT::Ptr points_set;	// 平面点集
 	pcl::ModelCoefficients coeff;					// 平面参数，法向量指向物体外部
-	std::vector<Triangle, Eigen::aligned_allocator<Triangle>> triangles;	// 多边形的三角形面片
+	std::vector<Triangle_HeadFile, Eigen::aligned_allocator<Triangle_HeadFile>> triangles_headfile;	// 多边形的三角形面片
 };
 typedef struct tagPOINT_3D
 {

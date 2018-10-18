@@ -645,7 +645,7 @@ DWORD WINAPI cmdFunc(LPVOID)
 				plane_clouds_final[ii].border->clear();
 				plane_clouds_final[ii].coeff.values.clear();
 				plane_clouds_final[ii].points_set->clear();
-				plane_clouds_final[ii].triangles.clear();
+				plane_clouds_final[ii].triangles_headfile.clear();
 			}
 			plane_clouds_final.clear();
 
@@ -668,7 +668,7 @@ DWORD WINAPI cmdFunc(LPVOID)
 				plane_clouds_final[ii].border->clear();
 				plane_clouds_final[ii].coeff.values.clear();
 				plane_clouds_final[ii].points_set->clear();
-				plane_clouds_final[ii].triangles.clear();
+				plane_clouds_final[ii].triangles_headfile.clear();
 			}
 			plane_clouds_final.clear();
 
@@ -696,7 +696,7 @@ DWORD WINAPI cmdFunc(LPVOID)
 			//		plane_clouds_final[plane_index].border = border;
 			//		plane_clouds_final[plane_index].points_set = points;
 			//		plane_clouds_final[plane_index].coeff.values.clear();
-			//		plane_clouds_final[plane_index].triangles.clear();
+			//		plane_clouds_final[plane_index].triangles_headfile.clear();
 			//		plane_clouds_final[plane_index].border->push_back(p_start);
 			//		continue;
 			//	}
@@ -1987,7 +1987,7 @@ void postProcessPlanes()
 		plane_clouds[i].border->clear();
 		plane_clouds[i].coeff.values.clear();
 		plane_clouds[i].points_set->clear();
-		plane_clouds[i].triangles.clear();
+		plane_clouds[i].triangles_headfile.clear();
 	}
 	plane_clouds.clear();
 	for(int i = 0; i < ps_cloud->size(); ++i)
