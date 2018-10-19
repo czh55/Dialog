@@ -1240,6 +1240,7 @@ void PCLViewer::on_performDelAction_triggered()
 	// 更新视图
 	on_editPolyAction_triggered();
 }
+
 // 保存多边形数据
 void PCLViewer::on_savePolyDataAction_triggered()
 {
@@ -1261,7 +1262,9 @@ void PCLViewer::on_savePolyDataAction_triggered()
 		}
 		pcl::io::savePCDFileASCII(fileName.toStdString(), *vertices);
 		// 保存每个多边形的size
-		fileName += ".txt";
+		int length = fileName.length();
+		fileName = fileName.mid(0, length - 3);
+		fileName += "_polySize.txt";
 		std::ofstream file(fileName.toStdString(), std::ios::out);
 
 		for (int ii = 0; ii < plane_clouds_final.size(); ++ii)
@@ -1279,9 +1282,21 @@ void PCLViewer::on_savePolyDataAction_triggered()
 			pn.normal_z = plane.coeff.values[2];
 			plane_normals->push_back(pn);
 		}
-		fileName += ".pcd";
+		int length1 = fileName.length();
+		fileName = fileName.mid(0, length - 3);
+		fileName += "_polyNormal.txt";
 		pcl::io::savePCDFileASCII(fileName.toStdString(), *plane_normals);
 		cout << "all " << plane_clouds_final.size() << " polys' data have been saved." << endl;
+		//保存每个多边形的Scale
+		int length2 = fileName.length();
+		fileName = fileName.mid(0, length - 3);
+		fileName += "_polyScale.txt";
+		std::ofstream file1(fileName.toStdString(), std::ios::out);
+		for (int scale = 0; scale < plane_clouds_final.size(); ++scale)
+		{
+			file1 << r_for_estimate_normal << endl;
+		}
+
 	}
 }
 // 进入多边形修剪模式
@@ -1628,7 +1643,7 @@ void PCLViewer::on_OpenAction_triggered()
 
     // 多边形顶点数量
     string v_size_fileName = fileName;
-    v_size_fileName.append("_polysize.txt");
+    v_size_fileName.append("_polySize.txt");
     memset(buf, 0, 64);
     vector<int> poly_v_size;
     poly_v_size.reserve(poly_size);
