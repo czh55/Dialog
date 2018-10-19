@@ -52,6 +52,10 @@ struct DiscontinuityTriangle{
     Eigen::Vector3d v[3];
 };
 
+//c++全局变量 不重复包含
+//https://blog.csdn.net/a_ran/article/details/39229941?utm_source=blogxgwz1
+extern char CMD[128];
+
 namespace Ui
 {
   class PCLViewer;

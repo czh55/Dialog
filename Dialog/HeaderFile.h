@@ -7,6 +7,9 @@
 //用于个PCLViewer一起使用
 void * m_pclviewer;
 
+const int CMD_Size = 128;
+char CMD[CMD_Size];
+
 #include <iostream>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/io.h>

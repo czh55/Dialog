@@ -16,6 +16,8 @@
 #include "setparams_simpilyverticessize_dialog.h"
 #include "setparams_mergingvertices_dialog.h"
 
+#include "Event.h"
+
 /****************************************前半段：开始**************************************************/
 #include <QLayout>
 #include <QFileDialog>
@@ -42,8 +44,6 @@
 #include "SetBGColorDialog.h"
 #include "SetPointCloudProDialog.h"
 /****************************************前半段：结束**************************************************/
-const int CMD_Size = 128;
-char CMD[CMD_Size];
 
 PCLViewer::PCLViewer (QWidget *parent) :
   QMainWindow (parent),
@@ -1680,9 +1680,9 @@ void PCLViewer::on_OpenAction_triggered()
 
 void PCLViewer::init()
 {
-    //viewer->registerKeyboardCallback(keyboardEventOccurred, (void *)this);
-    //viewer->registerPointPickingCallback(pointPickingEventOccurred, (void *)this);
-    //viewer->registerAreaPickingCallback(areaPickingEventOccurred, (void *)this);
+	viewer->registerKeyboardCallback(keyboardEventOccurred, (void *)this);
+	viewer->registerPointPickingCallback(pointPickingEventOccurred, (void *)this);
+	viewer->registerAreaPickingCallback(areaPickingEventOccurred, (void *)this);
 }
 
 // 显示背景色
