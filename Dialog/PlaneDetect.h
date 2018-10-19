@@ -207,13 +207,6 @@ inline float distP2P(pcl::PointXYZ &p1, pcl::PointXYZ &p2)
 }
 // 点到直线的距离函数
 void distP2L(pcl::PointXYZ &p, pcl::PointXYZ &p_base, Eigen::Vector3f &n, pcl::PointXYZ &p_projOnLine, float &dist);
-// 点选取事件回调函数
-void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &event, void* viewer_void);
-void areaPickingEventOccurred ( const pcl::visualization::AreaPickingEvent &event, void* viewer_void);
-// 键盘事件处理函数
-void keyboardEventOccurred_ps (const pcl::visualization::KeyboardEvent &event, void* viewer_void);
-// 键盘事件处理函数
-void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event, void* viewer_void);
 // 消息处理函数
 void processStateMsg();
 
@@ -1361,6 +1354,7 @@ void mergeClouds(PointCloudT::Ptr &source, PointCloudT::Ptr &target)
 
 	delete []isMarked;
 }
+
 // 多边形化平面点云
 void polyPlanes()
 {

@@ -189,6 +189,8 @@ private slots:
 
 	void on_mergePlanesAction_triggered();
 
+	void on_OpenPlanesAction_triggered();
+
 	void on_polyPlanesAction_triggered();
 
 	void on_postProcessAction_triggered();

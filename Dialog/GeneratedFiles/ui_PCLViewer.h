@@ -123,6 +123,7 @@ public:
     QAction *displayLineSegAction;
     QAction *switchLineSegAction;
     QAction *performLineSegDelAction;
+    QAction *OpenPlanesAction;
     QWidget *centralwidget;
     QHBoxLayout *horizontalLayout;
     QVTKWidget *qvtkWidget;
@@ -350,6 +351,8 @@ public:
         switchLineSegAction->setObjectName(QStringLiteral("switchLineSegAction"));
         performLineSegDelAction = new QAction(PCLViewer);
         performLineSegDelAction->setObjectName(QStringLiteral("performLineSegDelAction"));
+        OpenPlanesAction = new QAction(PCLViewer);
+        OpenPlanesAction->setObjectName(QStringLiteral("OpenPlanesAction"));
         centralwidget = new QWidget(PCLViewer);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -517,6 +520,7 @@ public:
         menu_18->addAction(segmentMenu->menuAction());
         menu_18->addAction(regionGrowingAction);
         menu_18->addAction(mergePlanesAction);
+        menu_18->addAction(OpenPlanesAction);
         menu_18->addAction(polyPlanesAction_2);
         menu_18->addAction(postProcessAction);
         menu_18->addSeparator();
@@ -651,6 +655,7 @@ public:
         displayLineSegAction->setText(QApplication::translate("PCLViewer", "\346\237\245\347\234\213\346\211\200\351\200\211\347\272\277\346\256\265", Q_NULLPTR));
         switchLineSegAction->setText(QApplication::translate("PCLViewer", "\347\272\277\346\256\265\345\210\207\346\215\242", Q_NULLPTR));
         performLineSegDelAction->setText(QApplication::translate("PCLViewer", "\346\211\247\350\241\214\345\210\240\351\231\244", Q_NULLPTR));
+        OpenPlanesAction->setText(QApplication::translate("PCLViewer", "\350\257\273\345\205\245\345\271\263\351\235\242(\351\200\211)", Q_NULLPTR));
         menu->setTitle(QApplication::translate("PCLViewer", "\346\226\207\344\273\266", Q_NULLPTR));
         viewerMenu->setTitle(QApplication::translate("PCLViewer", "\346\230\276\347\244\272", Q_NULLPTR));
         menu_3->setTitle(QApplication::translate("PCLViewer", "\351\241\266\347\202\271\345\214\226\347\256\200", Q_NULLPTR));

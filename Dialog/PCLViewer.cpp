@@ -999,6 +999,64 @@ void PCLViewer::on_mergePlanesAction_triggered()
 	strcpy(state, "merge planes");
 	processStateMsg();
 }
+
+//define by czh
+//读入平面，方便进行平面多边形化
+void PCLViewer::on_OpenPlanesAction_triggered()
+{
+	QString QfileName = QFileDialog::getOpenFileName(this, tr("Open PCD Files"), "/", tr("PCD Files (*.pcd)"));
+	// 存有所有的平面
+	std::string vertices_fileName = QfileName.toStdString();
+	pcl::PointCloud<pcl::PointXYZ>::Ptr vertices(new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::io::loadPCDFile(vertices_fileName, *vertices);
+	cout << "total vertices size = " << vertices->size() << endl;
+
+	string fileName = vertices_fileName;
+	for (int i = 0; i < 4; ++i) {
+		fileName.pop_back();
+	}
+	// 平面法向量
+	pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
+	string normals_fileName = fileName;
+	normals_fileName.append("_polyNormal.pcd");
+	pcl::io::loadPCDFile(normals_fileName, *normals);
+	int poly_size = normals->size();
+	cout << "poly size = " << poly_size << endl;
+
+	// 多边形顶点数量
+	char buf[64];
+	memset(buf, 0, 64);
+	std::ifstream file;
+	string v_size_fileName = fileName;
+	v_size_fileName.append("_polySize.txt");
+	memset(buf, 0, 64);
+	vector<int> poly_v_size;
+	poly_v_size.reserve(poly_size);
+	memset(buf, 0, 64);
+	file.open(v_size_fileName, std::ios::in);
+	while (file.getline(buf, 64)) {
+		int size = atoi(buf);
+		poly_v_size.push_back(size);
+		memset(buf, 0, 64);
+	}
+	file.clear();
+	file.close();
+
+	// 初始化多边形数据
+	plane_clouds_final.resize(poly_size);
+	int base_count = 0;
+	for (int i = 0; i < poly_size; ++i) {
+		plane_clouds_final[i].points_set->reserve(poly_v_size[i]);
+		for (int j = 0; j < poly_v_size[i]; ++j) {
+			plane_clouds_final[i].points_set->push_back(vertices->points[base_count + j]);
+		}
+
+		plane_clouds_final[i].coeff.values.push_back(normals->points[i].normal_x);
+		plane_clouds_final[i].coeff.values.push_back(normals->points[i].normal_y);
+		plane_clouds_final[i].coeff.values.push_back(normals->points[i].normal_z);
+		base_count += poly_v_size[i];
+	}
+}
 // 平面多边形化
 void PCLViewer::on_polyPlanesAction_triggered()
 {
@@ -1244,10 +1302,7 @@ void PCLViewer::on_performDelAction_triggered()
 // 保存多边形数据
 void PCLViewer::on_savePolyDataAction_triggered()
 {
-	QString fileName = QFileDialog::getSaveFileName(this,
-		tr("Open PCD Files"),
-		"",
-		tr("PCD Files (*.pcd)"));
+	QString fileName = QFileDialog::getSaveFileName(this,tr("Open PCD Files"),"",tr("PCD Files (*.pcd)"));
 
 	if (!fileName.isNull())
 	{
@@ -1296,7 +1351,6 @@ void PCLViewer::on_savePolyDataAction_triggered()
 		{
 			file1 << r_for_estimate_normal << endl;
 		}
-
 	}
 }
 // 进入多边形修剪模式
@@ -1587,8 +1641,7 @@ void PCLViewer::on_OpenAction_triggered()
     viewer->removeAllPointClouds();
     viewer->removeAllShapes();
 
-    QString QfileName = QFileDialog::getOpenFileName(this, tr("Open PCD Files"),
-                                                 "/", tr("PCD Files (*.pcd)"));
+    QString QfileName = QFileDialog::getOpenFileName(this, tr("Open PCD Files"), "/", tr("PCD Files (*.pcd)"));
     // std_fileName: 存有所有的多边形顶点
     std::string vertices_fileName = QfileName.toStdString();
     pcl::PointCloud<pcl::PointXYZ>::Ptr vertices (new pcl::PointCloud<pcl::PointXYZ>);

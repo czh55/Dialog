@@ -259,6 +259,7 @@
     <addaction name="segmentMenu"/>
     <addaction name="regionGrowingAction"/>
     <addaction name="mergePlanesAction"/>
+    <addaction name="OpenPlanesAction"/>
     <addaction name="polyPlanesAction_2"/>
     <addaction name="postProcessAction"/>
     <addaction name="separator"/>
@@ -768,6 +769,11 @@
   <action name="performLineSegDelAction">
    <property name="text">
     <string>执行删除</string>
+   </property>
+  </action>
+  <action name="OpenPlanesAction">
+   <property name="text">
+    <string>读入平面(选)</string>
    </property>
   </action>
  </widget>
