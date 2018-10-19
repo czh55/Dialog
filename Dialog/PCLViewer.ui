@@ -45,12 +45,12 @@
     <property name="title">
      <string>文件</string>
     </property>
-    <addaction name="action_O"/>
-    <addaction name="action_txt"/>
+    <addaction name="openPointCloudAction"/>
+    <addaction name="openTxtAction"/>
     <addaction name="OpenAction"/>
     <addaction name="action_9"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
+   <widget class="QMenu" name="viewerMenu">
     <property name="title">
      <string>显示</string>
     </property>
@@ -270,7 +270,7 @@
     <addaction name="savePolyDataAction"/>
    </widget>
    <addaction name="menu"/>
-   <addaction name="menu_2"/>
+   <addaction name="viewerMenu"/>
    <addaction name="pointCloudPreProcessMenu"/>
    <addaction name="registrationMenu"/>
    <addaction name="repairHolesMenu"/>
@@ -535,12 +535,12 @@
     <string>打开点云文件(&amp;O)</string>
    </property>
   </action>
-  <action name="action_O">
+  <action name="openPointCloudAction">
    <property name="text">
     <string>打开点云文件(&amp;O)</string>
    </property>
   </action>
-  <action name="action_txt">
+  <action name="openTxtAction">
    <property name="text">
     <string>打开txt格式文件</string>
    </property>

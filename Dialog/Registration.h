@@ -457,11 +457,11 @@ void FindSimilarPoly()																			    //Ê×ÏÈÔÚÔ´µãÔÆÖÐËæ»úÑ¡È¡Ò»¸ö¶à±ßÐÎ£
 
 				if (IsMatch == true)                                                                //Æ¥Åä³É¹¦Ìø³öforÑ­»·;
 				{
-					viewer_cloud.removeAllPointClouds();
-					viewer_cloud.addPointCloud<pcl::PointXYZ>(S_polyAfterN.border, "s");
-					viewer_cloud.addPointCloud<pcl::PointXYZ>(PolyAfterN[p_index].border, "t");
-					viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "s");
-					viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "t");
+					((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+					((PCLViewer*)m_pclviewer)->viewer->addPointCloud<pcl::PointXYZ>(S_polyAfterN.border, "s");
+					((PCLViewer*)m_pclviewer)->viewer->addPointCloud<pcl::PointXYZ>(PolyAfterN[p_index].border, "t");
+					((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "s");
+					((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "t");
 					break;
 				}
 			}
@@ -871,11 +871,11 @@ void registration()
 	cout << "transformation_matrix : " << endl;
 	cout << transformation_matrix_plane_registration << endl;
 
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(output, "source");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 0, 0, "source");
-	viewer_cloud.addPointCloud(target_cloud_border_plane_registration, "target");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 1.0, 0, "target");
+	((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloud(output, "source");
+	((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 0, 0, "source");
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloud(target_cloud_border_plane_registration, "target");
+	((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 1.0, 0, "target");
 }
 /***************************************************************************************************************************************/
 /*
@@ -894,11 +894,11 @@ void registration_cloud()
 	pcl::transformPointCloud(*source_cloud_plane_registration, *output, transformation_matrix_plane_registration);
 	*source_cloud_plane_registration = *output;
 
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(source_cloud_plane_registration, "source");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 0, 0, "source");
-	viewer_cloud.addPointCloud(target_cloud_plane_registration, "target");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 1.0, 0, "target");
+	((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud_plane_registration, "source");
+	((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 1.0, 0, 0, "source");
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloud(target_cloud_plane_registration, "target");
+	((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 1.0, 0, "target");
 
 	//±äÁ¿×ª»»Æ÷
 	verb_transform(output, cloud_result);

@@ -39,9 +39,6 @@
     <ClCompile Include="PCLViewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RemovePointCloudDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -101,9 +98,6 @@
     <QtMoc Include="PCLViewer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="MainWindow.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="HoleFillingInteractiveOperationDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -137,9 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Dialog.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="MainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="PCLViewer.ui">

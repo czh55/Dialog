@@ -33,7 +33,6 @@
 #include <pcl/filters/filter.h>
 
 #include "PlaneDetect.h"
-#include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "Registration.h"
 #include "HoleFilling_PLY.h"
@@ -78,14 +77,14 @@ PCLViewer::~PCLViewer ()
 
 /****************************************前半段：开始**************************************************/
 // 打开文件
-void PCLViewer::on_openFileAction_triggered()
+void PCLViewer::on_openPointCloudAction_triggered()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("open file"), " ", tr("pcdFiles(*.pcd)"));
 	if (fileName == "") return;
 	pcl::io::loadPCDFile(fileName.toStdString(), *source_cloud);
 	cout << "loaded " << source_cloud->size() << " points." << endl;
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
 }
 void PCLViewer::on_openTxtAction_triggered()
@@ -132,8 +131,8 @@ void PCLViewer::on_openTxtAction_triggered()
 	}
 	*source_cloud = cloud_txt;
 	cout << "loaded " << source_cloud->size() << " points." << endl;
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
 }
 //define by czh
@@ -144,8 +143,8 @@ void PCLViewer::on_openFile1RegistrationAction_triggered()
 	if (fileName == "") return;
 	pcl::io::loadPCDFile(fileName.toStdString(), *target_cloud_registration);
 	cout << "loaded " << target_cloud_registration->size() << " points." << endl;
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(target_cloud_registration, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(target_cloud_registration, "source");
 	ui->qvtkWidget->update();
 }
 
@@ -157,8 +156,8 @@ void PCLViewer::on_openFile2RegistrationAction_triggered()
 	if (fileName == "") return;
 	pcl::io::loadPCDFile(fileName.toStdString(), *source_cloud_registration);
 	cout << "loaded " << source_cloud_registration->size() << " points." << endl;
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(source_cloud_registration, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(source_cloud_registration, "source");
 	ui->qvtkWidget->update();
 
 	//变量转换器
@@ -173,6 +172,9 @@ void PCLViewer::on_openFile2RegistrationAction_triggered()
 //输出变量：source_cloud_registration  target_cloud_registration
 void PCLViewer::on_removeNanAction_triggered()
 {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 	//变量转换器
 	verb_transform(cloud_result, source_cloud_registration);
 
@@ -185,8 +187,8 @@ void PCLViewer::on_removeNanAction_triggered()
 	pcl::removeNaNFromPointCloud(*target_cloud_registration, *target_cloud_registration, indices_tgt);
 	std::cout << "remove *target_cloud_registration nan" << endl;
 
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(source_cloud_registration, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(source_cloud_registration, "source");
 	ui->qvtkWidget->update();
 
 	//变量转换器
@@ -196,13 +198,17 @@ void PCLViewer::on_removeNanAction_triggered()
 //define by czh
 //移除source_cloud的NAN点
 void PCLViewer::on_removeNan1Action_triggered() {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	std::vector<int> indices;
 	PointCloudT::Ptr new_cloud(new PointCloudT);
 	pcl::removeNaNFromPointCloud<pcl::PointXYZ>(*source_cloud, *new_cloud, indices);
 	source_cloud = new_cloud;
 
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
 
 	cout << "After nan points been removed, points size =" << source_cloud->size() << endl;
@@ -214,6 +220,10 @@ void PCLViewer::on_removeNan1Action_triggered() {
 将两个点云进行合并后的滤波
 */
 void PCLViewer::on_voxelGridFiltMergeCloudAction_triggered() {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr mergeCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
 	PointCloudT::Ptr cloud_merge(new PointCloudT);
 
@@ -221,7 +231,7 @@ void PCLViewer::on_voxelGridFiltMergeCloudAction_triggered() {
 	//verb_transform(cloud_result, cloud_result);
 
 	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	viewer->removeAllPointClouds();
 
 	savePointCloudFile(target_cloud_registration, cloud_result, "double_shadow");
 
@@ -244,8 +254,8 @@ void PCLViewer::on_voxelGridFiltMergeCloudAction_triggered() {
 	std::cout << "down size *cloud_tr_o from " << pointCloud_num1 << "to" << cloud_merge->size() << endl;
 
 	//显示点云
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(cloud_merge, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(cloud_merge, "source");
 
 	//将局部变量cloud_merge赋值给全局source_cloud，进行平面提取
 	*source_cloud = *cloud_merge;
@@ -254,18 +264,20 @@ void PCLViewer::on_voxelGridFiltMergeCloudAction_triggered() {
 
 
 //define by czh
-// 进行体素滤波
+// 两个配准点云，进行体素滤波
 //输入变量：source_cloud_registration  target_cloud_registration
 //输出变量：source_cloud_registration  target_cloud_registration
 void PCLViewer::on_voxelGridFiltAction_triggered()
 {
-
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 
 	//变量转换器
 	verb_transform(cloud_result, source_cloud_registration);
 
 	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	viewer->removeAllPointClouds();
 
 	//下采样滤波 source_cloud_registration
 	pcl::VoxelGrid<pcl::PointXYZ> voxel_grid;
@@ -288,8 +300,8 @@ void PCLViewer::on_voxelGridFiltAction_triggered()
 	std::cout << "down size *cloud_tgt_o.pcd from " << pointCloud_num2 << "to" << target_cloud_registration->size() << endl;
 
 	//直接显示在主界面
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(source_cloud_registration, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(source_cloud_registration, "source");
 	ui->qvtkWidget->update();
 
 	//变量转换器
@@ -299,6 +311,10 @@ void PCLViewer::on_voxelGridFiltAction_triggered()
 //define by czh
 //对source_cloud进行体素滤波
 void PCLViewer::on_voxelGridFilt1Action_triggered() {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	PointCloudT::Ptr cloud_filtered(new PointCloudT);
 	pcl::VoxelGrid<pcl::PointXYZ> sor;
 	sor.setInputCloud(source_cloud);
@@ -310,14 +326,17 @@ void PCLViewer::on_voxelGridFilt1Action_triggered() {
 	cout << "after voxel filterd, cloud size = " << cloud_filtered->size() << endl;
 	source_cloud = cloud_filtered;
 
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removeAllPointClouds();
+	viewer->addPointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
-	viewer_cloud.spinOnce();
 }
 //统计滤波
 void PCLViewer::on_statisticalOutlierRemovalFiltAction_triggered()
 {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
 	PointCloudT::Ptr cloud_filtered(new PointCloudT);
 	sor.setInputCloud(source_cloud);
@@ -333,13 +352,16 @@ void PCLViewer::on_statisticalOutlierRemovalFiltAction_triggered()
 	cout << "after statisticalOutlierRemoval filt, cloud size = " << cloud_filtered->size() << endl;
 	source_cloud = cloud_filtered;
 
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removeAllPointClouds();
+	viewer->addPointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
-	viewer_cloud.spinOnce();
 }
 void PCLViewer::on_setNumberforpointAction_triggered()
 {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	//PointCloudT::Ptr cloud_in(new PointCloudT), cloud_out(new PointCloudT);
 	//boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("Viewer"));
 	//pcl::io::loadPCDFile("unknown_object.pcd", *cloud_in);
@@ -357,16 +379,17 @@ void PCLViewer::on_setNumberforpointAction_triggered()
 	cout << "after statisticalOutlierRemoval filt, cloud size = " << cloud_filtered->size() << endl;
 	source_cloud = cloud_filtered;
 
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removeAllPointClouds();
+	viewer->addPointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
-	viewer_cloud.spinOnce();
-
-
 
 }
 void PCLViewer::on_rebuildPlaneAction_triggered()
 {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	pcl::search::KdTree<pcl::PointXYZ>::Ptr treerebuild(new pcl::search::KdTree<pcl::PointXYZ>);
 	PointCloudT::Ptr mls_cloud(new PointCloudT);
 	pcl::PointCloud<pcl::PointNormal> mls_points;
@@ -391,12 +414,11 @@ void PCLViewer::on_rebuildPlaneAction_triggered()
 	}
 	cout << "after rebuile, cloud size = " << mls_cloud->size() << endl;
 	source_cloud = mls_cloud;
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(source_cloud, "source");
+	viewer->removeAllPointClouds();
+	viewer->addPointCloud(source_cloud, "source");
 	cout << "done" << endl;
 	ui->qvtkWidget->update();
-	viewer_cloud.spinOnce();
-
+	
 	//pcl::copyPointCloud(*mls_points,*source_cloud)
 }
 
@@ -445,18 +467,22 @@ void PCLViewer::on_repairHolesOFFAction_triggered() {
 //输入数据：source_cloud_registration
 //输出数据：cloud_tr
 void PCLViewer::on_rotatePointCloudAction_triggered() {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	//变量转换器
 	verb_transform(cloud_result, source_cloud_registration);
 
 	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	viewer->removeAllPointClouds();
 
 	//tools->transformation(*source_cloud_registration, *cloud_icp, transformation_matrix);
 	transformation(*source_cloud_registration, *cloud_tr);
 
 	//直接显示在主界面
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(cloud_tr, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(cloud_tr, "source");
 	ui->qvtkWidget->update();
 
 	//变量转换器
@@ -467,11 +493,15 @@ void PCLViewer::on_rotatePointCloudAction_triggered() {
 //输入数据：cloud_tr target_cloud_registration 
 //输出数据：cloud_icp
 void PCLViewer::on_registrationSACAction_triggered() {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	//变量转换器
 	verb_transform(cloud_result, cloud_sac);
 
 	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	viewer->removeAllPointClouds();
 
 	//计算表面法线1
 	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne_src;
@@ -535,8 +565,8 @@ void PCLViewer::on_registrationSACAction_triggered() {
 	//直接显示SAC效果-单点云
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr mergeCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
 	mergePointCloud(target_cloud_registration, cloud_sac, mergeCloud);
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(mergeCloud, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(mergeCloud, "source");
 	ui->qvtkWidget->update();
 
 	//变量转换器
@@ -550,11 +580,15 @@ void PCLViewer::on_registrationSACAction_triggered() {
 //输出数据：cloud_icp
 void PCLViewer::on_registrationICPAction_triggered()
 {
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	//变量转换器
 	verb_transform(cloud_result, cloud_icp);
 
 	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	viewer->removeAllPointClouds();
 
 	pcl::console::TicToc time;
 	time.tic();
@@ -593,8 +627,8 @@ void PCLViewer::on_registrationICPAction_triggered()
 	//直接显示ICP效果-单点云
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr mergeCloud(new pcl::PointCloud<pcl::PointXYZRGB>);
 	mergePointCloud(target_cloud_registration, cloud_icp, mergeCloud);
-	viewer_cloud.removePointCloud("source");
-	viewer_cloud.addPointCloud(mergeCloud, "source");
+	viewer->removePointCloud("source");
+	viewer->addPointCloud(mergeCloud, "source");
 	ui->qvtkWidget->update();
 
 	//变量转换器
@@ -606,8 +640,10 @@ void PCLViewer::on_registrationICPAction_triggered()
 平面配准同样使用了变量转换器，只不过是写了第一个和最后一个函数的内部！
 */
 void PCLViewer::on_registrationPlaneAction_triggered() {
-	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 
 	/*在执行平面配准时，要事先求得当前输入的两个点云的平面数据*.pcd *.txt
 	*其实下面三个函数都是对PlaneDetect.h中函数的组合使用而已。
@@ -665,6 +701,11 @@ void PCLViewer::on_registrationPlaneAction_triggered() {
 // 改变背景颜色
 void PCLViewer::on_bgColorMenu_triggered()
 {
+
+	//清除界面
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
+
 	SetBGColorDialog dlg;
 
 	if (dlg.exec() != QDialog::Accepted) return;
@@ -672,9 +713,10 @@ void PCLViewer::on_bgColorMenu_triggered()
 	int r, g, b;
 	dlg.getRGB(r, g, b);
 
-	viewer_cloud.setBackgroundColor(r, g, b);
-	viewer_cloud.spinOnce();
+	viewer->setBackgroundColor(r, g, b);
+	viewer->spinOnce();
 	ui->qvtkWidget->update();
+	cout << "修改完背景颜色" << endl;
 }
 //change by czh
 // 改变点云颜色
@@ -687,17 +729,21 @@ void PCLViewer::on_pointCloudColorMenu_triggered()
 	dlg->getData(r, g, b, size);
 	delete dlg;
 
+	//清除界面上所有点云
+	viewer->removeAllPointClouds();
 	pcl::visualization::PointCloudColorHandlerCustom<PointT> cloud_color_h(source_cloud, r, g, b);
-	viewer_cloud.addPointCloud(source_cloud, cloud_color_h);
+	viewer->addPointCloud(source_cloud, cloud_color_h);
 	ui->qvtkWidget->update();
+	cout << "修改完点云颜色" << endl;
 }
 
 //define by czh
 //清除屏幕中的点云
 void PCLViewer::on_cleanPointCloudAction_triggered() {
 	//清除界面上所有点云
-	viewer_cloud.removeAllPointClouds();
+	viewer->removeAllPointClouds();
 	ui->qvtkWidget->update();
+	cout << "清除屏幕中的点云" << endl;
 }
 // 把点云移动至重心
 void PCLViewer::on_translateToCentroidAction_triggered()
@@ -720,10 +766,10 @@ void PCLViewer::on_translateToCentroidAction_triggered()
 		-1.0*p.y,
 		-1.0*p.z;
 	pcl::transformPointCloud(*source_cloud, *source_cloud, transform);
-	viewer_cloud.updatePointCloud(source_cloud, "source");
-	viewer_cloud.resetCamera();
+	viewer->updatePointCloud(source_cloud, "source");
+	viewer->resetCamera();
 	ui->qvtkWidget->update();
-	cout << "done." << endl;
+	cout << "把点云移动至重心" << endl;
 }
 
 // 设置平面提取参数
@@ -756,6 +802,7 @@ void PCLViewer::on_removeRedundantPointsAction_triggered()
 	}
 	source_cloud = new_cloud;
 	cout << "after remove redundant points, cloud size = " << source_cloud->size() << endl;
+
 }
 
 
@@ -772,7 +819,7 @@ void PCLViewer::on_regulateCoorAction_triggered()
 		source_cloud->points[i].z = tmp;
 		source_cloud->points[i].z *= -1.0f;
 	}
-	viewer_cloud.updatePointCloud(source_cloud, "source");
+	viewer->updatePointCloud(source_cloud, "source");
 	ui->qvtkWidget->update();
 }
 
@@ -1126,18 +1173,18 @@ void PCLViewer::on_editPolyAction_triggered()
 	}
 	kdtree_poly_centroids_cloud.setInputCloud(poly_centroids_cloud);
 	// step4: 显示数据
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.removeAllShapes();
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 
 	// 重心显示为绿色
-	viewer_cloud.addPointCloud(poly_centroids_cloud, "centroids");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "centroids");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "centroids");
+	viewer->addPointCloud(poly_centroids_cloud, "centroids");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "centroids");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "centroids");
 	for (int i = 0; i < plane_clouds_final.size(); ++i)
 	{
 		QString cloud_id;
 		cloud_id = QString::number(i, 10);
-		viewer_cloud.addPointCloud(plane_clouds_final[i].border, cloud_id.toStdString());
+		viewer->addPointCloud(plane_clouds_final[i].border, cloud_id.toStdString());
 	}
 
 	g_selected_poly_id = -1;
@@ -1153,8 +1200,8 @@ void PCLViewer::on_delPolyAction_triggered()
 		if (g_is_poly_del[i])
 		{
 			QString cloud_id = QString::number(i, 10);
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, cloud_id.toStdString());
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, cloud_id.toStdString());
+			viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, cloud_id.toStdString());
+			viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, cloud_id.toStdString());
 			ui->qvtkWidget->update();
 			// cout << cloud_id.toStdString() << endl;
 		}
@@ -1271,18 +1318,18 @@ void PCLViewer::on_enterPruneModeAction_triggered()
 	}
 	kdtree_poly_centroids_cloud.setInputCloud(poly_centroids_cloud);
 	// step4: 显示数据
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.removeAllShapes();
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 
 	// 重心显示为绿色
-	viewer_cloud.addPointCloud(poly_centroids_cloud, "centroids");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "centroids");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "centroids");
+	viewer->addPointCloud(poly_centroids_cloud, "centroids");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "centroids");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "centroids");
 	for (int i = 0; i < plane_clouds_final.size(); ++i)
 	{
 		QString cloud_id;
 		cloud_id = QString::number(i, 10);
-		viewer_cloud.addPointCloud(plane_clouds_final[i].border, cloud_id.toStdString());
+		viewer->addPointCloud(plane_clouds_final[i].border, cloud_id.toStdString());
 	}
 
 	g_selected_poly_id = -1;
@@ -1293,10 +1340,10 @@ void PCLViewer::on_enterPruneModeAction_triggered()
 // 仅显示当前多边形
 void PCLViewer::on_selCurPolyAction_triggered()
 {
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.removeAllShapes();
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 
-	viewer_cloud.addPointCloud(plane_clouds_final[g_selected_poly_id].border, "border");
+	viewer->addPointCloud(plane_clouds_final[g_selected_poly_id].border, "border");
 	// 提示用户选择顶点
 	cout << "可以开始选择第一个顶点" << endl;
 	memset(state, 0, CMD_SIZE);
@@ -1309,11 +1356,11 @@ void PCLViewer::on_setFirstPointAction_triggered()
 	first_point = g_selected_point;
 	PointCloudT::Ptr cloud(new PointCloudT);
 	cloud->push_back(first_point);
-	viewer_cloud.removePointCloud("point");
-	viewer_cloud.removePointCloud("first point");
-	viewer_cloud.addPointCloud(cloud, "first point");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "first point");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "first point");
+	viewer->removePointCloud("point");
+	viewer->removePointCloud("first point");
+	viewer->addPointCloud(cloud, "first point");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "first point");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "first point");
 	cout << "第一个点已选中" << endl;
 }
 // 设置选中点为第二个顶点
@@ -1322,11 +1369,11 @@ void PCLViewer::on_setSecondPointAction_triggered()
 	second_point = g_selected_point;
 	PointCloudT::Ptr cloud(new PointCloudT);
 	cloud->push_back(second_point);
-	viewer_cloud.removePointCloud("point");
-	viewer_cloud.removePointCloud("second point");
-	viewer_cloud.addPointCloud(cloud, "second point");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "second point");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "second point");
+	viewer->removePointCloud("point");
+	viewer->removePointCloud("second point");
+	viewer->addPointCloud(cloud, "second point");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "second point");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "second point");
 	cout << "第二个点已选中" << endl;
 }
 // 执行多边形切分操作
@@ -1387,8 +1434,8 @@ void PCLViewer::on_performPolyCutAction_triggered()
 	cout << "ok2" << endl;
 
 	// step4: 更新视图
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.removeAllShapes();
+	viewer->removeAllPointClouds();
+	viewer->removeAllShapes();
 	on_enterPruneModeAction_triggered();
 }
 // 显示要删除的线段
@@ -1424,10 +1471,10 @@ void PCLViewer::on_displayLineSegAction_triggered()
 		cur_index = cur_index == plane_clouds_final[g_selected_poly_id].border->size() - 1 ?
 			0 : cur_index + 1;
 	}
-	viewer_cloud.removePointCloud("line seg");
-	viewer_cloud.addPointCloud(line_points, "line seg");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "line seg");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "line seg");
+	viewer->removePointCloud("line seg");
+	viewer->addPointCloud(line_points, "line seg");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "line seg");
+	viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "line seg");
 }
 // 切换线段
 void PCLViewer::on_switchLineSegAction_triggered()

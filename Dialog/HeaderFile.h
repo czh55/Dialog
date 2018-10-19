@@ -1,6 +1,12 @@
 #ifndef HEADFILE_H
 #define HEADFILE_H
 
+//define by czh 
+//程序显示类
+#include "PCLViewer.h"
+//用于个PCLViewer一起使用
+void * m_pclviewer;
+
 #include <iostream>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/io.h>
@@ -90,7 +96,7 @@ std::vector<Plane, Eigen::aligned_allocator<Plane>> plane_clouds_final;
 /************************************************************************************************************************************/
 // viewer instances
 //pcl::visualization::PCLVisualizer viewer_ps;		// display param space
-pcl::visualization::PCLVisualizer viewer_cloud;		// display point clouds
+//pcl::visualization::PCLVisualizer viewer_cloud;  // display point clouds
 
 //typedef pcl::PointXYZRGB PointT;
 const int ARGU_BUFFER_SIZE = 256;		// 参数缓冲区大小

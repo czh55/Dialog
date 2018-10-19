@@ -15,7 +15,9 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/common/centroid.h>
+/****************************************前半段：开始**************************************************/
 #include <pcl/filters/voxel_grid.h>
+/****************************************前半段：结束**************************************************/
 
 // Visualization Toolkit (VTK)
 #include <vtkRenderWindow.h>
@@ -27,7 +29,10 @@
 
 #include "holefillinginteractiveoperationdialog.h"
 #include "controloptimizationsnappingdialog.h"
-
+/****************************************前半段：开始**************************************************/
+#include <iostream>
+#include "RegulateNormalDialog.h"
+/****************************************前半段：结束**************************************************/
 
 using namespace std;
 
@@ -105,8 +110,8 @@ public:
 /****************************************前半段：开始**************************************************/
 	RegulateNormalDialog RegulateNormalDialog;
 /****************************************前半段：结束**************************************************/
-public slots:
-	void on_openFileAction_triggered();
+private slots:
+	void on_openPointCloudAction_triggered();
 
 	void on_openTxtAction_triggered();
 

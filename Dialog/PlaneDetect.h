@@ -7,6 +7,8 @@
 #include <QString>
 #include <pcl/features/normal_3d_omp.h>
 
+
+
 // 有些变量只有在初次设置时才是有效的，应该设置一个第一次运行的标志变量
 bool isFirstRun = true;
 bool isFirstPostProcess = true;
@@ -217,21 +219,21 @@ HANDLE display_thread;
 	//DWORD dwThread;
 	display_thread = ::CreateThread(NULL, 0, cmdFunc, (LPVOID)cmdFunc, 0, &dwThread);
 
-	viewer_cloud.addCoordinateSystem(1.0f);
+	((PCLViewer*)m_pclviewer)->viewer->addCoordinateSystem(1.0f);
 	viewer_ps.addCoordinateSystem(1.0f);
 
-	viewer_cloud.setWindowName("point cloud");
+	((PCLViewer*)m_pclviewer)->viewer->setWindowName("point cloud");
 	viewer_ps.setWindowName("param space");
 
-	viewer_cloud.registerPointPickingCallback(pointPickingEventOccurred, (void*)&viewer_cloud);
-	viewer_cloud.registerKeyboardCallback(keyboardEventOccurred_cloud, (void*)&viewer_cloud);
-	viewer_cloud.registerAreaPickingCallback(areaPickingEventOccurred, (void*)&viewer_cloud);
+	((PCLViewer*)m_pclviewer)->viewer->registerPointPickingCallback(pointPickingEventOccurred, (void*)&((PCLViewer*)m_pclviewer)->viewer->);
+	((PCLViewer*)m_pclviewer)->viewer->registerKeyboardCallback(keyboardEventOccurred_cloud, (void*)&((PCLViewer*)m_pclviewer)->viewer->);
+	((PCLViewer*)m_pclviewer)->viewer->registerAreaPickingCallback(areaPickingEventOccurred, (void*)&((PCLViewer*)m_pclviewer)->viewer->);
 	viewer_ps.registerKeyboardCallback(keyboardEventOccurred_ps, (void*)&viewer_ps);
 
 	while(!viewer_ps.wasStopped())
 	{
 		viewer_ps.spinOnce(500);
-		viewer_cloud.spinOnce(500);
+		((PCLViewer*)m_pclviewer)->viewer->spinOnce(500);
 		processStateMsg();
 	}
 }*/
@@ -674,8 +676,8 @@ DWORD WINAPI cmdFunc(LPVOID)
 
 			PointCloudT::Ptr poly_cloud (new PointCloudT);
 			pcl::io::loadPCDFile("poly.pcd", *poly_cloud);
-			viewer_cloud.removeAllPointClouds();
-			viewer_cloud.addPointCloud(poly_cloud,"poly");*/
+			((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+			((PCLViewer*)m_pclviewer)->viewer->addPointCloud(poly_cloud,"poly");*/
 			//bool isStartNewPoly = true;
 			//pcl::PointXYZ p_start, p_cur;
 
@@ -899,8 +901,8 @@ void loadPointCloud()
 	}
 
 	preProcess();
-	viewer_cloud.removeAllPointClouds();
-	viewer_cloud.addPointCloud(source_cloud,"source");
+	((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud,"source");
 }
 // 加载点云，带有法向量
 void loadPointNormal()
@@ -933,9 +935,9 @@ void loadPointNormal()
 			source_cloud->push_back(p);
 			source_normal->push_back(n);
 		}
-		viewer_cloud.removeAllPointClouds();
-		viewer_cloud.addPointCloud(source_cloud,"source");
-		viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
+		((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud,"source");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
 			source_cloud, source_normal, 
 			interval_level, normal_length_for_display, "normal");
 
@@ -1060,10 +1062,10 @@ void estimateNormal()
 
 	finish = std::clock();
 	cout << "normal estimation used: " << finish-start << "ms." << endl;
-   // viewer_cloud.removePointCloud("source");
-   // viewer_cloud.addPointCloud(source_cloud, "source");
-    //viewer_cloud.removePointCloud("normal");
-   // viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
+   // ((PCLViewer*)m_pclviewer)->viewer->removePointCloud("source");
+   // ((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud, "source");
+    //((PCLViewer*)m_pclviewer)->viewer->removePointCloud("normal");
+   // ((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
         //source_cloud, source_normal,
        // interval_level, normal_length_for_display, "normal");
 }
@@ -1100,8 +1102,8 @@ void regulateNormal()
 		}
 
 		// 更新显示的法向量
-		viewer_cloud.removePointCloud("normal");
-		viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("normal");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
 		source_cloud, source_normal, 
 		interval_level, normal_length_for_display, "normal");
 		return;
@@ -1171,18 +1173,18 @@ void regulateNormal()
 		}
 	}
 	cout << "number of points that have been processed is: " << processed_cloud->size() << endl;
-	viewer_cloud.removePointCloud("processed");
-	viewer_cloud.addPointCloud(processed_cloud, "processed");
-	viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "processed");
+	((PCLViewer*)m_pclviewer)->viewer->removePointCloud("processed");
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloud(processed_cloud, "processed");
+	((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "processed");
 
 	// 更新显示的法向量
-	viewer_cloud.removePointCloud("normal");
-	viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
+	((PCLViewer*)m_pclviewer)->viewer->removePointCloud("normal");
+	((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(
 		source_cloud, source_normal, 
 		interval_level, normal_length_for_display, "normal");
 
 	// 把之前选择的点的显示状态删掉
-	viewer_cloud.removePointCloud("selected normal");
+	((PCLViewer*)m_pclviewer)->viewer->removePointCloud("selected normal");
 
 	// 重置selected_point_index
 	selected_point_index = -1;
@@ -1711,7 +1713,7 @@ void growPlaneArea()
 // 平面合并
 void mergePlanes()
 {
-	/*
+
 	// 构造关系图
 	std::vector<std::vector<int>> E;
 	for(int i = 0; i < plane_clouds.size(); ++i)
@@ -1803,7 +1805,7 @@ void mergePlanes()
 	cout << "final plane number = " << plane_clouds_final.size() << endl;
 
 	delete []isNodeProcessed;
-	*/
+
 	plane_clouds_final = plane_clouds;
 }
 // 获取两个平面公共点的数量
@@ -1978,7 +1980,7 @@ void projPoint2Plane( pcl::PointXYZ &source_point, pcl::PointXYZ &dest_point, Ei
 int plane_start_index = 0;
 void postProcessPlanes()
 {
-	/*
+
 	// 清理数据
 	isFirstUseRegulateNormal = true;	// 估计法向量时使用
 	sinkPointsSet.clear();
@@ -2089,7 +2091,7 @@ void postProcessPlanes()
 			source_cloud->push_back(cloud->points[i]);
 		}
 	}
-	*/
+
 	// just for testing:
 	/*Plane plane_ = plane_clouds_final[0];
 	plane_clouds_final.clear();
@@ -2104,7 +2106,7 @@ void postProcessPlanes()
 		}
 	}*/
 	///////////////////////////////////////////////////////////////////////////
-	/*
+
 	// 对剩下的点云进行聚类，每个聚类的数目不得少于一个阈值
 	clusterFilt();
 
@@ -2117,7 +2119,6 @@ void postProcessPlanes()
 	
 	isFirstRun = false;					// 是第一遍跑这个procedure吗？
 
-	*/
 }
 // 对源点云进行聚类分割，并舍弃元素数量较少的聚类
 void clusterFilt()
@@ -2603,17 +2604,17 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
 		pcl::PointCloud<pcl::Normal>::Ptr selected_normal (new pcl::PointCloud<pcl::Normal>);
 		selected_normal->push_back(source_normal->points[selected_point_index]);
 
-		viewer_cloud.removePointCloud("selected normal");
-		viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("selected normal");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
 			(selected_point, selected_normal,1,normal_length_for_selected,"selected normal");
 
         point_index = event.getPointIndex();
         PointCloudT::Ptr point (new PointCloudT);
         point->push_back(source_cloud->points[point_index]);
-        viewer_cloud.removePointCloud("point");
-        viewer_cloud.addPointCloud(point, "point");
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
+        ((PCLViewer*)m_pclviewer)->viewer->addPointCloud(point, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
 	}	
 
 	if(strcmp(state, "segment planes") == 0)
@@ -2664,8 +2665,8 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
 		float angle = arccos(growth_unit_normal.dot(local_point_normal)) * 180.0f / PI;
 		cout << "angle = " << angle << endl;
 
-		viewer_cloud.removeShape("sphere");
-		viewer_cloud.addSphere(source_cloud->points[point_index], r_local, 255,0,0,"sphere");
+		((PCLViewer*)m_pclviewer)->viewer->removeShape("sphere");
+		((PCLViewer*)m_pclviewer)->viewer->addSphere(source_cloud->points[point_index], r_local, 255,0,0,"sphere");
 
 		// 显示增长单元的法向量
 		pcl::PointXYZ p;
@@ -2691,8 +2692,8 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
 		cloud1->push_back(p);
 		pcl::PointCloud<pcl::Normal>::Ptr normal1 (new pcl::PointCloud<pcl::Normal>);
 		normal1->push_back(pn);
-		viewer_cloud.removePointCloud("growth_unit_normal");
-		viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("growth_unit_normal");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
 			(cloud1, normal1,1,normal_length_for_selected,"growth_unit_normal");
 		// 显示选中点的局部法向量
 		p = source_cloud->points[point_index];
@@ -2703,8 +2704,8 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
 		cloud2->push_back(p);
 		pcl::PointCloud<pcl::Normal>::Ptr normal2 (new pcl::PointCloud<pcl::Normal>);
 		normal2->push_back(pn);
-		viewer_cloud.removePointCloud("local_normal");
-		viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("local_normal");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
 			(cloud2, normal2,1,normal_length_for_selected/2.0,"local_normal");
 	}
 
@@ -2716,8 +2717,8 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
         if(!g_is_poly_del[g_selected_poly_id])
         {
             // 将之前选取的多边形颜色回复
-            viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 255, 255, cloud_id.toStdString());
-            viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, cloud_id.toStdString());
+            ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 255, 255, cloud_id.toStdString());
+            ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, cloud_id.toStdString());
         }
 
         event.getPoint(g_selected_point.x, g_selected_point.y, g_selected_point.z);
@@ -2732,15 +2733,15 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
         // 显示已经选取的点
         PointCloudT::Ptr point (new PointCloudT);
         point->push_back(poly_centroids_cloud->points[g_selected_poly_id]);
-        viewer_cloud.removePointCloud("point");
-        viewer_cloud.addPointCloud(point, "point");
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
+        ((PCLViewer*)m_pclviewer)->viewer->addPointCloud(point, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
 
         // 用绿色显示被选中的多边形
         cloud_id = QString::number(g_selected_poly_id, 10);
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, cloud_id.toStdString());
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, cloud_id.toStdString());
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, cloud_id.toStdString());
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, cloud_id.toStdString());
     }
 
     if(strcmp(state, "prune poly select points") == 0)
@@ -2749,10 +2750,10 @@ void pointPickingEventOccurred ( const pcl::visualization::PointPickingEvent &ev
         // 显示已经选取的点
         PointCloudT::Ptr point (new PointCloudT);
         point->push_back(g_selected_point);
-        viewer_cloud.removePointCloud("point");
-        viewer_cloud.addPointCloud(point, "point");
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
-        viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
+        ((PCLViewer*)m_pclviewer)->viewer->addPointCloud(point, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
+        ((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
     }
 }
 void areaPickingEventOccurred ( const pcl::visualization::AreaPickingEvent &event,
@@ -2769,14 +2770,14 @@ void areaPickingEventOccurred ( const pcl::visualization::AreaPickingEvent &even
 	{		
 		point_index = indices[0];
 		cout << "point_index = " << point_index << endl;
-		viewer_cloud.removeAllShapes();
-		viewer_cloud.addSphere(source_cloud->points[point_index], r_for_estimate_normal, 0, 255, 0, "sphere");
-		viewer_cloud.removePointCloud("point");
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
+		((PCLViewer*)m_pclviewer)->viewer->addSphere(source_cloud->points[point_index], r_for_estimate_normal, 0, 255, 0, "sphere");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
 		PointCloudT::Ptr point (new PointCloudT);
 		point->push_back(source_cloud->points[point_index]);
-		viewer_cloud.addPointCloud(point, "point");
-		viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
-		viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(point, "point");
+		((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
+		((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
 	}
 
 	if(strcmp(state, "estimate normal") == 0 ||
@@ -2791,18 +2792,18 @@ void areaPickingEventOccurred ( const pcl::visualization::AreaPickingEvent &even
 		pcl::PointCloud<pcl::Normal>::Ptr selected_normal (new pcl::PointCloud<pcl::Normal>);
 		selected_normal->push_back(source_normal->points[selected_point_index]);
 
-		viewer_cloud.removePointCloud("selected normal");
-		viewer_cloud.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("selected normal");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloudNormals<pcl::PointXYZ, pcl::Normal>
 			(selected_point, selected_normal,1,normal_length_for_selected,"selected normal");
 
 		
 		point_index = indices[0];
 		PointCloudT::Ptr point (new PointCloudT);
 		point->push_back(source_cloud->points[point_index]);
-		viewer_cloud.removePointCloud("point");
-		viewer_cloud.addPointCloud(point, "point");
-		viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
-		viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(point, "point");
+		((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "point");
+		((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
 	}
 }
 
@@ -2845,9 +2846,9 @@ void keyboardEventOccurred_ps (const pcl::visualization::KeyboardEvent &event,
 					}
 				}
 			}
-			viewer_cloud.removePointCloud("plane");
-			viewer_cloud.addPointCloud(plane, "plane");
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->removePointCloud("plane");
+			((PCLViewer*)m_pclviewer)->viewer->addPointCloud(plane, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
 			cout << "plane has " << plane->size() << " point.s" << endl;
 
 			id_sink = ++id_sink % sinkPointsSet.size();
@@ -2857,7 +2858,7 @@ void keyboardEventOccurred_ps (const pcl::visualization::KeyboardEvent &event,
 	if(event.getKeySym() == "F1" && event.keyDown())
 	{
 		//viewer_ps.removePointCloud("sink field");
-		viewer_cloud.removePointCloud("plane");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("plane");
 		id_sink = id_plane = 0;
 	}
 }
@@ -2875,9 +2876,9 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 			cout << "id_plane = " << id_plane << endl;
 			PointCloudT::Ptr plane (new PointCloudT);
 			plane = plane_clouds[id_plane].points_set;
-			viewer_cloud.removePointCloud("plane");
-			viewer_cloud.addPointCloud(plane, "plane");
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->removePointCloud("plane");
+			((PCLViewer*)m_pclviewer)->viewer->addPointCloud(plane, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
 			cout << "plane has " << plane->size() << " point.s" << endl;
 			growth_unit_id = id_plane;
 			id_plane = ++id_plane % plane_clouds.size();
@@ -2888,14 +2889,14 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 			cout << "id_plane = " << id_plane << endl;
 			PointCloudT::Ptr growth_unit (new PointCloudT);
 			PointCloudT::Ptr plane (new PointCloudT);
-			viewer_cloud.removePointCloud("plane");
-			viewer_cloud.removePointCloud("growth_unit");
+			((PCLViewer*)m_pclviewer)->viewer->removePointCloud("plane");
+			((PCLViewer*)m_pclviewer)->viewer->removePointCloud("growth_unit");
 			growth_unit = growth_unit_set[id_plane].points_set;
 			plane = plane_clouds[id_plane].points_set;
-			viewer_cloud.addPointCloud(plane,"plane");
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
-			viewer_cloud.addPointCloud(growth_unit,"growth_unit");
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "growth_unit");
+			((PCLViewer*)m_pclviewer)->viewer->addPointCloud(plane,"plane");
+			((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->addPointCloud(growth_unit,"growth_unit");
+			((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "growth_unit");
 			cout << "plane has " << plane->size() << " point.s" << endl;
 			cout << "growth unit has " << growth_unit->size() << " point.s" << endl;
 			id_plane = ++id_plane % plane_clouds.size();
@@ -2906,16 +2907,16 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 			cout << "id_plane = " << id_plane << endl;
 			PointCloudT::Ptr plane (new PointCloudT);
 			plane = plane_clouds_final[id_plane].points_set;
-			viewer_cloud.removePointCloud("plane");
-			viewer_cloud.addPointCloud(plane, "plane");
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->removePointCloud("plane");
+			((PCLViewer*)m_pclviewer)->viewer->addPointCloud(plane, "plane");
+			((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "plane");
 			cout << "plane has " << plane->size() << " point.s" << endl;
 			id_plane = ++id_plane % plane_clouds_final.size();
 		}
 
 		/*if(strcmp(state,"poly planes")==0)
 		{
-			viewer_cloud.removeAllShapes();
+			((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
 			cout << "id_plane = " << id_plane << endl;
 			PointCloudT::Ptr border (new PointCloudT);
 			border = plane_clouds_final[id_plane].border;
@@ -2923,11 +2924,11 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 			{
 				std::stringstream ss;
 				ss << i;
-				viewer_cloud.addLine(border->points[i], border->points[i+1], 255, 255, 0, ss.str());
+				((PCLViewer*)m_pclviewer)->viewer->addLine(border->points[i], border->points[i+1], 255, 255, 0, ss.str());
 			}
 			std::stringstream ss;
 			ss << border->size()-1;
-			viewer_cloud.addLine(border->points[border->size()-1], border->points[0], 255, 255, 0, ss.str());
+			((PCLViewer*)m_pclviewer)->viewer->addLine(border->points[border->size()-1], border->points[0], 255, 255, 0, ss.str());
 			id_plane = ++id_plane % plane_clouds_final.size();
 		}*/
 
@@ -2939,16 +2940,16 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 
 	if(event.getKeySym() == "F1" && event.keyDown())
 	{
-		viewer_cloud.removePointCloud("source");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("source");
 	}
 	if(event.getKeySym() == "F2" && event.keyDown())
 	{
-		viewer_cloud.removePointCloud("source");
-		viewer_cloud.addPointCloud(source_cloud, "source");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("source");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud, "source");
 	}
 	if(event.getKeySym() == "F3" && event.keyDown())
 	{
-		viewer_cloud.removeAllShapes();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
 		pcl::PolygonMesh polygons;
 		PointCloudT vertices;
 		for(int ii = 0; ii < plane_clouds_final.size(); ++ii)
@@ -2974,7 +2975,7 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 			base_index += num_of_vertices;
 		}
 
-		viewer_cloud.addPolylineFromPolygonMesh(polygons, "polyline");
+		((PCLViewer*)m_pclviewer)->viewer->addPolylineFromPolygonMesh(polygons, "polyline");
 		/*for(int ii = 0; ii < plane_clouds_final.size(); ++ii)
 		{
 			Plane plane = plane_clouds_final[ii];
@@ -2991,40 +2992,40 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 			pcl::toPCLPointCloud2(*plane.border, pm.cloud);
 			std::stringstream ss;
 			ss << ii;
-			viewer_cloud.addPolylineFromPolygonMesh(pm,ss.str());
+			((PCLViewer*)m_pclviewer)->viewer->addPolylineFromPolygonMesh(pm,ss.str());
 		}*/
 	}
 	if(event.getKeySym() == "F4" && event.keyDown())
 	{
-		viewer_cloud.removeAllShapes();
-		viewer_cloud.removePointCloud("point");
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
 	}
 	if(event.getKeySym() == "F5" && event.keyDown())
 	{
-		viewer_cloud.removePointCloud("source backup");
-		viewer_cloud.addPointCloud(source_cloud_backup, "source backup");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("source backup");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud_backup, "source backup");
 	}
 	if(event.getKeySym() == "F6" && event.keyDown())
 	{
-		viewer_cloud.removePointCloud("source backup");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("source backup");
 	}
 	if(event.getKeySym() == "F7" && event.keyDown())
 	{
-		viewer_cloud.removeAllShapes();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
 		for(int ii = 0; ii < plane_clouds_final.size(); ++ii)
 		{
 			Plane plane = plane_clouds_final[ii];
 			std::stringstream ss;
 			ss << "poly" << ii;
-			viewer_cloud.addPolygon<pcl::PointXYZ>(plane.border,ss.str());
+			((PCLViewer*)m_pclviewer)->viewer->addPolygon<pcl::PointXYZ>(plane.border,ss.str());
 		}
 	}
 
 	// colored_cloud
 	if(event.getKeySym() == "F8" && event.keyDown())
 	{
-		viewer_cloud.removeAllPointClouds();
-		viewer_cloud.removeAllShapes();		
+		((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();		
 		colored_cloud->clear();
 		pcl::PointXYZRGB p;
 		int r,g,b;
@@ -3045,17 +3046,17 @@ void keyboardEventOccurred_cloud (const pcl::visualization::KeyboardEvent &event
 				p.b = b;
 				colored_cloud->push_back(p);
 			}
-			/*viewer_cloud.addPointCloud(plane_clouds_final[i].points_set,ss.str());
-			viewer_cloud.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, rand()%256, rand()%256, rand()%256, ss.str());*/
+			/*((PCLViewer*)m_pclviewer)->viewer->addPointCloud(plane_clouds_final[i].points_set,ss.str());
+			((PCLViewer*)m_pclviewer)->viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, rand()%256, rand()%256, rand()%256, ss.str());*/
 		}
 		color_handler.setInputCloud(colored_cloud);
-		viewer_cloud.addPointCloud<pcl::PointXYZRGB>(colored_cloud, color_handler, "colored");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud<pcl::PointXYZRGB>(colored_cloud, color_handler, "colored");
 		cout << "rendering done." << endl;
 	}
 	if(event.getKeySym() == "F9" && event.keyDown())
 	{
-		viewer_cloud.removeAllPointClouds();
-		viewer_cloud.removeAllShapes();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
 		cout << "elimination done." << endl;
 	}
 	if(event.getKeySym() == "F10" && event.keyDown())
@@ -3136,9 +3137,9 @@ void processStateMsg()
 
 	if(strcmp(state, "clear normal") == 0)
 	{
-		viewer_cloud.removePointCloud("normal");
-		viewer_cloud.removePointCloud("processed");
-		viewer_cloud.removePointCloud("point");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("normal");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("processed");
+		((PCLViewer*)m_pclviewer)->viewer->removePointCloud("point");
 		memset(state, 0, CMD_SIZE);
 	}
 
@@ -3179,17 +3180,17 @@ void processStateMsg()
 
 	if(strcmp(state, "run again") == 0)
 	{
-		viewer_cloud.removeAllPointClouds();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
 		//viewer_ps.removeAllPointClouds();
 
-		viewer_cloud.addPointCloud(source_cloud, "source");
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud, "source");
 
 		memset(state, 0, CMD_SIZE);
 	}
 	if(strcmp(state, "postProcess planes") == 0)
 	{
-		viewer_cloud.removeAllPointClouds();
-		viewer_cloud.addPointCloud(source_cloud, "source");
+		((PCLViewer*)m_pclviewer)->viewer->removeAllPointClouds();
+		((PCLViewer*)m_pclviewer)->viewer->addPointCloud(source_cloud, "source");
 		memset(state, 0, CMD_SIZE);
 	}
 
@@ -3205,7 +3206,7 @@ void processStateMsg()
 
 	if(strcmp(state, "load polys") == 0)
 	{
-		viewer_cloud.removeAllShapes();
+		((PCLViewer*)m_pclviewer)->viewer->removeAllShapes();
 		for(int ii = 0; ii < plane_clouds_final.size(); ++ii)
 		{
 			Plane plane = plane_clouds_final[ii];
@@ -3222,7 +3223,7 @@ void processStateMsg()
 			pcl::toPCLPointCloud2(*plane.border, pm.cloud);
 			std::stringstream ss;
 			ss << ii;
-			viewer_cloud.addPolylineFromPolygonMesh(pm,ss.str());
+			((PCLViewer*)m_pclviewer)->viewer->addPolylineFromPolygonMesh(pm,ss.str());
 		}
 		memset(state, 0, CMD_SIZE);
 	}

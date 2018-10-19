@@ -3,13 +3,10 @@
 
 #include <QApplication>
 #include "pclviewer.h"
-#include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	/*MainWindow w;
-	w.show();*/
 
 	PCLViewer v;
 	v.show();
