@@ -1360,6 +1360,7 @@ void polyPlanes()
 {
 	for(int i = 0; i < plane_clouds_final.size(); ++i)
 	{
+		cout << "完成 " << i  << "个平面" << endl;
 		if(plane_clouds_final[i].border != NULL) continue;	// 避免多次跑的时候再次计算
 		PointCloudT::Ptr border (new PointCloudT);
 		plane_clouds_final[i].border = border;

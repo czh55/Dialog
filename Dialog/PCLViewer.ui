@@ -254,12 +254,13 @@
     <addaction name="plane_detect_set_param_Action"/>
     <addaction name="load_param_action"/>
     <addaction name="separator"/>
+    <addaction name="OpenPlanesAction"/>
+    <addaction name="separator"/>
     <addaction name="normalEstimateAction"/>
     <addaction name="psMenu"/>
     <addaction name="segmentMenu"/>
     <addaction name="regionGrowingAction"/>
     <addaction name="mergePlanesAction"/>
-    <addaction name="OpenPlanesAction"/>
     <addaction name="polyPlanesAction_2"/>
     <addaction name="postProcessAction"/>
     <addaction name="separator"/>
