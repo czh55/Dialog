@@ -101,6 +101,11 @@ std::vector<Plane, Eigen::aligned_allocator<Plane>> plane_clouds_final;
 //pcl::visualization::PCLVisualizer viewer_ps;		// display param space
 //pcl::visualization::PCLVisualizer viewer_cloud;  // display point clouds
 
+//将主视图的PCLViewer对象保存在外部一份，让planeDetech.h，registration.h来使用
+void get_PCLViewer_obj(PCLViewer* viewer) {
+	m_pclviewer = viewer;
+}
+
 //typedef pcl::PointXYZRGB PointT;
 const int ARGU_BUFFER_SIZE = 256;		// 参数缓冲区大小
 extern char g_argu_buffer[ARGU_BUFFER_SIZE];	// 参数缓冲区

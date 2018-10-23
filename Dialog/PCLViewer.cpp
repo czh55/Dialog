@@ -640,6 +640,8 @@ void PCLViewer::on_registrationICPAction_triggered()
 平面配准同样使用了变量转换器，只不过是写了第一个和最后一个函数的内部！
 */
 void PCLViewer::on_registrationPlaneAction_triggered() {
+	//让配准的显示内容，通过主页面显示
+	get_PCLViewer_obj(this);
 	
 	//清除界面
 	viewer->removeAllPointClouds();
@@ -657,8 +659,6 @@ void PCLViewer::on_registrationPlaneAction_triggered() {
 	verb_transform(source_cloud_registration, source_cloud);
 	//为平面提取加载参数
 	on_load_param_action_triggered();
-	//估计法向量
-	on_normalEstimateAction_triggered();
 	//自动执行
 	on_autoPerformAction_triggered();
 	//保存多边形数据
@@ -669,8 +669,6 @@ void PCLViewer::on_registrationPlaneAction_triggered() {
 	verb_transform(target_cloud_registration, source_cloud);
 	//为平面提取加载参数
 	on_load_param_action_triggered();
-	//估计法向量
-	on_normalEstimateAction_triggered();
 	//自动执行
 	on_autoPerformAction_triggered();
 	//保存多边形数据
@@ -682,6 +680,7 @@ void PCLViewer::on_registrationPlaneAction_triggered() {
 
 	start = std::clock();
 	cout << "auto run......." << endl;
+
 	//loadpolygon();
 	while (source_index < source_polygon.size())
 	{
@@ -1644,6 +1643,9 @@ void PCLViewer::on_loadPolyDataAction_triggered()
 
 // 加载参数
 void PCLViewer::loadParams(){
+	//让配准的显示内容，通过主页面显示
+	get_PCLViewer_obj(this);
+
     QSettings configIniRead("config.ini", QSettings::IniFormat);
     T_angle_betPointAndPoint = configIniRead.value("simplify vertices size/T_angle_betPointAndPoint").toFloat();
     T_angle_betPointAndLine = configIniRead.value("simplify vertices size/T_angle_betPointAndLine").toFloat();

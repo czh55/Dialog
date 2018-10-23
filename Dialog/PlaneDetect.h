@@ -1280,7 +1280,6 @@ void mergePlanes()
 
 	delete []isNodeProcessed;
 
-	plane_clouds_final = plane_clouds;
 }
 // 获取两个平面公共点的数量
 int getCommonPointsNumber(PointCloudT::Ptr &cloud1, PointCloudT::Ptr &cloud2)
@@ -1358,6 +1357,7 @@ void mergeClouds(PointCloudT::Ptr &source, PointCloudT::Ptr &target)
 // 多边形化平面点云
 void polyPlanes()
 {
+	cout << "一共" << plane_clouds_final.size() << "个平面" << endl;
 	for(int i = 0; i < plane_clouds_final.size(); ++i)
 	{
 		cout << "完成 " << i  << "个平面" << endl;
@@ -1564,21 +1564,6 @@ void postProcessPlanes()
 			source_cloud->push_back(cloud->points[i]);
 		}
 	}
-
-	// just for testing:
-	/*Plane plane_ = plane_clouds_final[0];
-	plane_clouds_final.clear();
-	plane_clouds_final.push_back(plane_);
-	plane_clouds_final[0].points_set->clear();
-	for(int i = 0; i < cloud->size(); ++i)
-	{
-		if(isPointInPlane(cloud->points[i], plane_clouds_final[0]) &&
-			isPointInPlane_complement(cloud->points[i], plane_clouds_final[0]))
-		{
-			plane_clouds_final[0].points_set->push_back(cloud->points[i]);
-		}
-	}*/
-	///////////////////////////////////////////////////////////////////////////
 
 	// 对剩下的点云进行聚类，每个聚类的数目不得少于一个阈值
 	clusterFilt();
