@@ -515,12 +515,13 @@ public:
         menu_18->addAction(plane_detect_set_param_Action);
         menu_18->addAction(load_param_action);
         menu_18->addSeparator();
+        menu_18->addAction(OpenPlanesAction);
+        menu_18->addSeparator();
         menu_18->addAction(normalEstimateAction);
         menu_18->addAction(psMenu->menuAction());
         menu_18->addAction(segmentMenu->menuAction());
         menu_18->addAction(regionGrowingAction);
         menu_18->addAction(mergePlanesAction);
-        menu_18->addAction(OpenPlanesAction);
         menu_18->addAction(polyPlanesAction_2);
         menu_18->addAction(postProcessAction);
         menu_18->addSeparator();
